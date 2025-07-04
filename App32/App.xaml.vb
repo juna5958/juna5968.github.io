@@ -9,10 +9,6 @@ Partial Public Class App
     Inherits Application
     Public Sub New()
         Me.InitializeComponent()
-
-        ' Enter construction logic here...
-
-        Dim mainPage = New MainPage()
-        Window.Current.Content = mainPage
+        Window.Current.Content = New MainPage()
     End Sub
 End Class

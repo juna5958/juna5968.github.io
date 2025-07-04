@@ -9,5 +9,9 @@
 
     <Grid Background="{DynamicResource Theme_BackgroundBrush}">
         <TextBlock Text="Hello, World!" FontSize="23" Margin="32,32,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Content="Create Netlify DB &amp; Add 50 Persons" Margin="32,140,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="32" Click="BtnCreateDb_Clicked" />
+        <Button Content="Read Data to DataGrid" Margin="32,184,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="32" Click="BtnReadData_Clicked" />
+        <Button Content="Delete Selected Person" Margin="32,228,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="32" Click="BtnDeleteSelected_Click" />
+        <DataGrid x:Name="DataGrid1" Margin="300,96,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="400" Height="280" AutoGenerateColumns="True" />
     </Grid>
 </Page>
