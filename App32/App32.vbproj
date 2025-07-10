@@ -23,6 +23,7 @@
   <ItemGroup>
     <Compile Include="App.xaml.vb" />
     <Compile Include="MainPage.xaml.vb" />
+    <Compile Include="PersonRepository.vb" />
   </ItemGroup>
   
 </Project>

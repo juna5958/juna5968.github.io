@@ -5,13 +5,23 @@
       xmlns:local="clr-namespace:App32"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      Foreground="{DynamicResource Theme_TextBrush}">
+      Foreground="{DynamicResource Theme_TextBrush}" d:DesignWidth="1360" d:DesignHeight="768">
 
     <Grid Background="{DynamicResource Theme_BackgroundBrush}">
         <TextBlock Text="Hello, World!" FontSize="23" Margin="32,32,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Button Content="Create Netlify DB &amp; Add 50 Persons" Margin="32,140,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="32" Click="BtnCreateDb_Clicked" />
         <Button Content="Read Data to DataGrid" Margin="32,184,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="32" Click="BtnReadData_Clicked" />
-        <Button Content="Delete Selected Person" Margin="32,228,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="32" Click="BtnDeleteSelected_Click" />
-        <DataGrid x:Name="DataGrid1" Margin="300,96,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="400" Height="280" AutoGenerateColumns="True" />
+        <Button Content="Delete Selected Person" Margin="32,316,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="32" Click="BtnDeleteSelected_Click" />
+        <!-- Data Entry Form above DataGrid -->
+        <Border Margin="300,32,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="400" Height="48" Background="#222" CornerRadius="6">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,8,0,0">
+                <TextBlock Text="Name:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="White"/>
+                <TextBox x:Name="TxtName" Width="120" Height="28" Margin="0,0,16,0"/>
+                <TextBlock Text="Age:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="White"/>
+                <TextBox x:Name="TxtAge" Width="60" Height="28" Margin="0,0,16,0"/>
+                <Button Content="Add Person" Width="100" Height="28" Click="BtnAddPerson_Click" />
+            </StackPanel>
+        </Border>
+        <DataGrid x:Name="DataGrid1" Margin="300,88,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="400" Height="280" AutoGenerateColumns="True" />
     </Grid>
 </Page>

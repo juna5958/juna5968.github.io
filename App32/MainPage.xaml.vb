@@ -4,7 +4,6 @@ Imports System.Linq
 Imports System.Text.Json
 Imports System.Windows
 Imports System.Windows.Controls
-Imports OpenSilver.Interop
 
 ' Define the Person class
 Public Class Person
@@ -16,21 +15,20 @@ End Class
 Partial Public Class MainPage
     Inherits Page
     Private persons As List(Of Person)
-    Private Const LocalStorageKey As String = "persons_json"
+    Private repo As New PersonRepository()
 
     Public Sub New()
         Me.InitializeComponent()
-        LoadPersonsFromLocalStorage()
+        persons = repo.LoadPersons()
+        If persons Is Nothing Then
+            persons = repo.CreateDefaultPersons()
+        End If
         DataGrid1.ItemsSource = persons
     End Sub
 
     ' Create local JSON file (localStorage) and add 50 records
     Private Sub BtnCreateDb_Clicked(sender As Object, e As RoutedEventArgs)
-        persons = New List(Of Person)()
-        For i = 1 To 50
-            persons.Add(New Person With {.Id = i, .Name = $"Person {i}", .Age = 20 + (i Mod 30)})
-        Next
-        SavePersonsToLocalStorage()
+        persons = repo.CreateDefaultPersons()
         DataGrid1.ItemsSource = Nothing
         DataGrid1.ItemsSource = persons
         MessageBox.Show("Local JSON DB created and 50 Person records added.", "Info")
@@ -38,41 +36,51 @@ Partial Public Class MainPage
 
     ' Read data and display in DataGrid
     Private Sub BtnReadData_Clicked(sender As Object, e As RoutedEventArgs)
-        LoadPersonsFromLocalStorage()
+        persons = repo.LoadPersons()
+        If persons Is Nothing Then
+            persons = repo.CreateDefaultPersons()
+        End If
         DataGrid1.ItemsSource = Nothing
         DataGrid1.ItemsSource = persons
     End Sub
 
-    ' Save persons list to localStorage as JSON
-    Private Sub SavePersonsToLocalStorage()
-        Dim json = JsonSerializer.Serialize(persons)
-        OpenSilver.Interop.ExecuteJavaScriptVoid($"window.localStorage.setItem('{LocalStorageKey}', `{json}`)")
-    End Sub
-
-    ' Load persons list from localStorage
-    Private Sub LoadPersonsFromLocalStorage()
-        Dim json = OpenSilver.Interop.ExecuteJavaScript($"window.localStorage.getItem('{LocalStorageKey}')")
-        If json IsNot Nothing AndAlso json.ToString() <> "null" Then
-            persons = JsonSerializer.Deserialize(Of List(Of Person))(json.ToString())
-        Else
-            'persons = New List(Of Person)()
-            BtnCreateDb_Clicked(Nothing, Nothing) ' Create DB if not found
-        End If
-    End Sub
-
     ' DataGrid RowEditEnding event for update/add
     Private Sub DataGrid1_RowEditEnding(sender As Object, e As DataGridRowEditEndingEventArgs) Handles DataGrid1.RowEditEnding
-        SavePersonsToLocalStorage()
+        repo.SavePersons(persons)
     End Sub
 
     ' DataGrid SelectionChanged event for delete (manual delete button)
     Private Sub BtnDeleteSelected_Click(sender As Object, e As RoutedEventArgs)
         If DataGrid1.SelectedItem IsNot Nothing Then
-            persons.Remove(CType(DataGrid1.SelectedItem, Person))
-            SavePersonsToLocalStorage()
+            repo.DeletePerson(persons, CType(DataGrid1.SelectedItem, Person))
             DataGrid1.ItemsSource = Nothing
             DataGrid1.ItemsSource = persons
         End If
+    End Sub
+
+    ' Add a new person from form
+    Private Sub BtnAddPerson_Click(sender As Object, e As RoutedEventArgs)
+        Dim name As String = TxtName.Text.Trim()
+        Dim ageValue As Integer
+        If String.IsNullOrWhiteSpace(name) Then
+            MessageBox.Show("Please enter a name.", "Validation")
+            Return
+        End If
+        If Not Integer.TryParse(TxtAge.Text.Trim(), ageValue) OrElse ageValue < 0 Then
+            MessageBox.Show("Please enter a valid age.", "Validation")
+            Return
+        End If
+        Dim nextId As Integer = 1
+        If persons.Count > 0 Then
+            nextId = persons.Max(Function(p) p.Id) + 1
+        End If
+        Dim newPerson As New Person With {.Id = nextId, .Name = name, .Age = ageValue}
+        persons.Add(newPerson)
+        repo.SavePersons(persons)
+        DataGrid1.ItemsSource = Nothing
+        DataGrid1.ItemsSource = persons
+        TxtName.Text = ""
+        TxtAge.Text = ""
     End Sub
 
 End Class
